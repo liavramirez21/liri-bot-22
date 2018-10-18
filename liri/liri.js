@@ -1,4 +1,7 @@
 require("dotenv").config();
+
+/* HE SAID THAT OBJECTS ARE NOT BEING ABLE TO GO FROM OBJECT-STRING*/
+
 let dataKeys = require("./keys.js");
 let Spotify = require('node-spotify-api');
 let spotify = new Spotify(dataKeys.spotify);
@@ -10,8 +13,7 @@ const command = process.argv[2];
 const query = process.argv[3];
 console.log(command);
 var cmd = command.toLowerCase();
-
-
+var err;
 switch(cmd) {
     
     case "spotify-this-song": {
@@ -20,43 +22,57 @@ switch(cmd) {
             if (err) {
               return console.log('Error occurred: ' + err);
             }
-            console.log(data);
+            for (var i=0;i < data.artists.items.length; i++) {
+                console.log(data.artists.items[i])
+            }
+               
         });
     }
-
-
-        break;
+    break;
     case "concert-this": {
         console.log(query);
-        var bandAPI = "https://rest.bandsintown.com/artists/" + query + "app_id=codingbootcamp";
-        request(`https://rest.bandsintown.com/artists/`, function(err, res, body) {
+        var bandAPI = "https://rest.bandsintown.com/artists/" + query + "/events?app_id=codingbootcamp"
+        request(bandAPI, function(err, res, body) {
             if (err) {
                 console.log('Error occurred: ' + err);
                 return;
             } else {
-                let jsonData = JSON.parse(body);
+                /*let jsonData = JSON.parse(body);*/
+            for (var i=0; i < body.length; i++) {
+                 
+                console.log(body)
+
             }
+               
+        }
 
         })}
+        /*HOW TO MAKE THE API SPIT INFORMATION OUT AND NOT PRINT WHAT IS PUT IN*/
     
 
-        break;
-        
-    case "movie-this": {
+
+     break;
+     case "movie-this": {
         console.log(query);
-        var movieAPI = "http://www.omdbapi.com/" + query +"?apikey=trilogy&t=";
-    request("http://www.omdbapi.com", function(err, res, body) {
+        var movieAPI = "https://www.omdbapi.com/?t=" + query + "&y=&plot=short&apikey=trilogy"
+        request(movieAPI, function(error, response, body) {
         if (err) {
             console.log('Error occurred: ' + err);
             return;
         } else {
-            let jsonData = JSON.parse(body);
-
+            for (var i=0; i < body.length; i++) {
+                 
+                console.log(body)
+            }
         }})}
+
         break;
-    case "do-what-it-says": {
+        case "do-what-it-says": {
            fs.readFile("random.txt", "utf8", function(error, data) {
             getMeSpotify(data);
+            getMeMovie(body);
+            getMeOmdb(body);
+            getMebBand(body);
         });
     }
     
